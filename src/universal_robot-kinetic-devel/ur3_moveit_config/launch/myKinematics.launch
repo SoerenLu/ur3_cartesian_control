@@ -1,0 +1,16 @@
+<launch>
+  <node name="myUr3Jacobian"
+        pkg="ur3_moveit_config"
+        type="myUr3Jacobian"
+        respawn="true" output="screen">
+    <rosparam command="load"
+              file="$(find ur3_moveit_config)/config/kinematics.yaml"/>
+  </node>
+  <node name="joy2joy_continuous"
+        pkg="ur3_moveit_config"
+        type="joy2joy_continuous.py"
+        respawn="true" output="screen">
+  </node>
+
+  <include file="$(find ps3joy)/launch/ps3.launch" />
+</launch>

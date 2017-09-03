@@ -10,43 +10,52 @@ key_mapping = { 'q':[1,0,0,0,0,0], 'a':[-1,0,0,0,0,0], 'w':[0,1,0,0,0,0],
 def keys_cb(msg, args):
   #args is a reference to the twist message that is published and it has to be updated according to msg (which is of type Joy)
  #move forward
- if msg == 'w':
+ if msg.data == 'w':
   args[0].linear.x = 0.005
  #move backward
- elif msg == 's':
+ elif msg.data == 's':
   args[0].linear.x = -0.005
  #move left
- if msg == 'a':
-  args[0].linear.x = 0.005
+ if msg.data == 'a':
+  args[0].linear.y = 0.005
  #move right
- elif msg == 'd':
-  args[0].linear.x = -0.005
+ elif msg.data == 'd':
+  args[0].linear.y = -0.005
  #move up
- if msg == 'r':
-  args[0].linear.x = 0.005
+ if msg.data == 'r':
+  args[0].linear.z = 0.005
  #move down
- elif msg == 'f':
-  args[0].linear.x = -0.005
+ elif msg.data == 'f':
+  args[0].linear.z = -0.005
  #rotate 1 +
- if msg == 'o':
+ if msg.data == 'o':
   args[0].angular.x = 0.02
  #rotate 1 -
- elif msg == 'u':
+ elif msg.data == 'u':
   args[0].angular.x = -0.02
  #rotate 2 +
- if msg == 'l':
+ if msg.data == 'l':
   args[0].angular.y = 0.02
  #rotate 2 -
- elif msg == 'j':
+ elif msg.data == 'j':
   args[0].angular.y = -0.02
  #rotate 3 +
- if msg == 'u':
+ if msg.data == 'i':
   args[0].angular.z = 0.02;
  #rotate 3 -
- elif msg == 'j':
+ elif msg.data == 'k':
   args[0].angular.z = -0.02;
+ 
+ #reset to zero
+ if msg.data == ' ':
+  args[0].linear.x = 0
+  args[0].linear.y = 0
+  args[0].linear.z = 0
+  args[0].angular.x = 0
+  args[0].angular.y = 0
+  args[0].angular.z = 0
 
-
+  
 if __name__=='__main__':
  contTwist = [Twist()] #put empty Twist object in a list (which is filled in the callback function)
  rospy.init_node('keys2twist_continuous_node')

@@ -1,0 +1,5 @@
+<launch>
+ <!-- Load the iiwa urdf model into the parameter server -->
+ <param name="robot_description" textfile="$(find iiwa_description)/urdf/iiwa7.urdf"/>
+  
+</launch>

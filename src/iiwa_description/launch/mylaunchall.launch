@@ -1,0 +1,9 @@
+<launch>
+ <!-- Load the iiwa urdf model into the parameter server -->
+ <param name="robot_description" textfile="$(find iiwa_description)/urdf/iiwa7.urdf"/>
+  
+<include file="$(find iiwa_moveit_config)/launch/demo.launch" />
+ 
+<include file="$(find iiwa_description)/launch/myKinematics.launch" />
+
+</launch>

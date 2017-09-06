@@ -32,11 +32,13 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Author: Sachin Chitta */
+/* Former author: Sachin Chitta */
+/* Guy who changed everything: Soeren Langhorst */
 
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
 #include <sensor_msgs/Joy.h>
+#include <geometry_msgs/Twist.h>
 
 
 // MoveIt
@@ -44,24 +46,24 @@
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_state/robot_state.h>
 
-class Joy2Joint
+class Twist2JointState
 {
 public:
  Joy2Joint()
  {
   pub_counter_ = 1;
   joint_state_pub_ = n_.advertise<sensor_msgs::JointState>("joint_states", 10);
-  joy_sub_ = n_.subscribe("joy_continuous",1, &Joy2Joint::callback, this);
+  joy_sub_ = n_.subscribe("twist_continuous",1, &Joy2Joint::callback, this);
   robot_model_loader::RobotModelLoader robot_model_loader("robot_description");
   kinematic_model_ = robot_model_loader.getModel();
   joint_model_group_ = kinematic_model_->getJointModelGroup("manipulator");
   // Get Joint Values
   // ^^^^^^^^^^^^^^^^
-  joint_values_={0.516, -1.77, 1.68, 0.0, 0.58, 3.13};
+  joint_values_={0.516, -1.77, 1.68, 0.0, 0.58, 3.13}; //these values are a good starting point in a relative safe configuration
   printf("Constructor");
  }
 
- void callback(const sensor_msgs::Joy& msg)
+ void callback(const geometry_msgs::Twist& msg)
  {
  // Start
  // ^^^^^
@@ -93,72 +95,12 @@ public:
  //Define dphi vector for desired orientation change  in operational space
  Eigen::Vector3d dphi(0,0,0);
 
- //move forward
- if(joymsg.buttons[3] == 1)
- {
-  dx[0] = 0.005;
- }
- // move backward
- else if(joymsg.buttons[1] ==1)
- {
-  dx[0] = -0.005;
- }
-
- //move left
- if(joymsg.buttons[0] == 1)
- {
-  dx[1] = 0.005;
- }
- // move right
- else if(joymsg.buttons[2] ==1)
- {
-  dx[1] = -0.005;
- }
-
- //move up
- if(joymsg.buttons[5] == 1)
- {
-  dx[2] = 0.005;
- }
- // move down
- else if(joymsg.buttons[7] ==1)
- {
-  dx[2] = -0.005;
- }
-
- //rotate 1 +
- if(joymsg.axes[6] == -1)
- {
-  dphi[0] = 0.02;
- }
- //rotate 1 -
- else if(joymsg.axes[6] == 1)
- {
-  dphi[0] = -0.02;
- }
- //rotate 2 +
- if(joymsg.axes[7] == 1)
- {
-  dphi[1] = 0.02;
- }
- //rotate 2 -
- else if(joymsg.axes[7] ==-1)
- {
-  dphi[1] = -0.02;
- }
- //rotate 3 +
- if(joymsg.buttons[4] == 1)
- {
-  dphi[2] = 0.02;
- }
- //rotate 3 -
- else if(joymsg.buttons[6] ==1)
- {
-  dphi[2] = -0.02;
- }
-
-
-
+  dx[0] = msg.linear.x;
+  dx[1] = msg.linear.y;
+  dx[2] = msg.linear.z;
+  dphi[0] = msg.angular.x;
+  dphi[1] = msg.angular.y;
+  dphi[2] = msg.angular.z;
 
  // the resulting joint value difference dq
  std::vector<double> dq = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};

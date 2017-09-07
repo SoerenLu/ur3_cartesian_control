@@ -8,7 +8,7 @@
 <!-- Loads URDF (again, unneccessarily (?)), launches robot_state_publisher, launches move_group (which is the main MoveIt executable) and run Rviz -->
 <include file="$(find ur3_moveit_config)/launch/demo.launch" />
  
-<!-- Launches the ps3joy ps3.launch and two further nodes: joy2joy_continuous, to make the joystick input continuous, and myUr3Jacobian (source: myJacobian.cpp), which publishes new joint_states according to the joystick input by calculating the inverse Jacobian. Like, the easiest way possible to solve the inverse kinematics --> 
+<!-- Launches myUr3Jacobian (source: myJacobian.cpp), and the key_publisher and the key_to_twist_contiuous node --> 
 <include file="$(find ur3_moveit_config)/launch/myKinematics_key.launch" />
 
 </launch>

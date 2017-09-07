@@ -74,6 +74,7 @@ var twist = new ROSLIB.Message({
     }
 });
 
+//todo: get stepsize from form
 function pubTwist( directionID ) {
     /**
     Publish the respective twist 
@@ -88,7 +89,7 @@ function pubTwist( directionID ) {
 	50-Z+, 60-Z-
     **/
   var step = 0.01;
-  var rot_step = 0.2;
+  var rot_step = 0.1;
   switch(directionID) {
       case 1:
           twist.linear.x = step;

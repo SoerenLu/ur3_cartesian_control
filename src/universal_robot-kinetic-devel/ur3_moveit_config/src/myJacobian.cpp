@@ -49,11 +49,11 @@
 class Twist2JointState
 {
 public:
- Joy2Joint()
+ Twist2JointState()
  {
   pub_counter_ = 1;
   joint_state_pub_ = n_.advertise<sensor_msgs::JointState>("joint_states", 10);
-  joy_sub_ = n_.subscribe("twist_continuous",1, &Joy2Joint::callback, this);
+  joy_sub_ = n_.subscribe("twist_continuous",1, &Twist2JointState::callback, this);
   robot_model_loader::RobotModelLoader robot_model_loader("robot_description");
   kinematic_model_ = robot_model_loader.getModel();
   joint_model_group_ = kinematic_model_->getJointModelGroup("manipulator");
@@ -69,7 +69,7 @@ public:
  // ^^^^^
  //ROS_INFO("Model frame: %s", kinematic_model_->getModelFrame().c_str());
 
- sensor_msgs::Joy joymsg = msg;
+ geometry_msgs::Twist twistmsg = msg;
 
  robot_state::RobotStatePtr kinematic_state(new robot_state::RobotState(kinematic_model_));
  kinematic_state->setJointGroupPositions(joint_model_group_, joint_values_);  
@@ -121,14 +121,15 @@ public:
  pub_msg.header.stamp.sec = now.sec;
  pub_msg.header.stamp.nsec = now.nsec;
 
- pub_msg.name = joint_names_;
- pub_msg.position = joint_values_;
-
  for(int i=0; i<6; i++)
  {
   joint_values_[i] += dq[i];
  }
- /**
+
+ pub_msg.name = joint_names_;
+ pub_msg.position = joint_values_;
+
+/**
   * The publish() function is how you send messages. The parameter
   * is the message object. The type of this object must agree with the type
   * given as a template parameter to the advertise<>() call, as was done
@@ -152,9 +153,9 @@ private:
 //^^^^
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "Joy2Joint");
+  ros::init(argc, argv, "Twist2JointState");
 
-  Joy2Joint joyful_object;
+  Twist2JointState joyful_object;
 
   ros::spin();  
   return 0;
